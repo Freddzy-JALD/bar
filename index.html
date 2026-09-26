@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maison Retrouvailles</title>
+<meta name="theme-color" content="#F7F1E4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Retrouvailles">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="ikoner/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&family=Cormorant+SC:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script>/* Maison Retrouvailles – felles data for meny, gjesteside, kjøkken, kalkulator og backend.
+   Én kilde til sannhet: endrer du noe her, bygges alt på nytt fra dette. */
+var BAR = {
+  navn: "Maison Retrouvailles",
+  kortnavn: "Retrouvailles",
+  undertittel: "Bar & Salon",
+  dato: "Samedi 26 septembre 2026",
+  datoNorsk: "lørdag 26. september 2026",
+  grunnlagt: "Fondée le 26 septembre 2026",
+
+  intro: "Mesdames et messieurs. Det har gått noen år. Noen av oss har fått barn, boliglån og sterke meninger om grillkull. I kveld legger vi alt det igjen i garderoben. Huset serverer tretten drikker, hver med sitt eget temperament. Skann koden, velg med hjertet og len deg tilbake – vi gir beskjed når glasset ditt er klart.",
+  fotnote: "Vann er gratis, ubegrenset og på det varmeste anbefalt mellom slagene.",
+
+  seksjoner: [
+    { id: "rafraichissements", navn: "Les Rafraîchissements", undertekst: "Høye, kalde og uforskammet forfriskende" },
+    { id: "classiques", navn: "Les Classiques", undertekst: "Korte, stolte og ettertenksomme" },
+    { id: "gourmandises", navn: "Les Gourmandises", undertekst: "Kremet, mørkt og etter midnatt" }
+  ],
+
+  /* Ingredienskatalog. enhet = hvordan oppskriften måler. kjop = hvordan det handles inn. */
+  ingredienser: {
+    gin:            { navn: "Gin", kort: "gin",                      kat: "Brennevin og likør", enhet: "cl", kjop: { type: "flaske", str: 70, tekst: "flaske à 70 cl" } },
+    vodka:          { navn: "Vodka", kort: "vodka",                    kat: "Brennevin og likør", enhet: "cl", kjop: { type: "flaske", str: 70, tekst: "flaske à 70 cl" } },
+    lys_rom:        { navn: "Lys rom", kort: "lys rom",                  kat: "Brennevin og likør", enhet: "cl", kjop: { type: "flaske", str: 70, tekst: "flaske à 70 cl" } },
+    mork_rom:       { navn: "Mørk rom", kort: "mørk rom",                 kat: "Brennevin og likør", enhet: "cl", kjop: { type: "flaske", str: 70, tekst: "flaske à 70 cl" } },
+    whisky:         { navn: "Whisky (gjerne bourbon)", kort: "whisky",  kat: "Brennevin og likør", enhet: "cl", kjop: { type: "flaske", str: 50, tekst: "flaske à 50 cl" } },
+    tequila:        { navn: "Tequila", kort: "tequila",                  kat: "Brennevin og likør", enhet: "cl", kjop: { type: "flaske", str: 50, tekst: "flaske à 50 cl" } },
+    amaretto:       { navn: "Amaretto", kort: "amaretto",                 kat: "Brennevin og likør", enhet: "cl", kjop: { type: "flaske", str: 50, tekst: "flaske à 50 cl" } },
+    kahlua:         { navn: "Kaffelikør (Kahlúa)", kort: "kaffelikør",      kat: "Brennevin og likør", enhet: "cl", kjop: { type: "flaske", str: 50, tekst: "flaske à 50 cl" } },
+    triple_sec:     { navn: "Triple sec / Cointreau", kort: "triple sec",   kat: "Brennevin og likør", enhet: "cl", kjop: { type: "flaske", str: 50, tekst: "flaske à 50 cl" } },
+    bitter:         { navn: "Angostura bitter", kort: "Angostura",         kat: "Brennevin og likør", enhet: "dråper", kjop: { type: "flaske", str: 250, tekst: "flaske à 20 cl" } },
+
+    tonic:          { navn: "Tonic", kort: "tonic",                    kat: "Mixere", enhet: "cl", kjop: { type: "flaske", str: 100, tekst: "flaske à 1 l" } },
+    ingefaerol:     { navn: "Ingefærøl (ginger beer)", kort: "ingefærøl",  kat: "Mixere", enhet: "cl", kjop: { type: "flaske", str: 50,  tekst: "flaske à 0,5 l" } },
+    cola:           { navn: "Cola", kort: "cola",                     kat: "Mixere", enhet: "cl", kjop: { type: "flaske", str: 150, tekst: "flaske à 1,5 l" } },
+    soda:           { navn: "Soda / Farris", kort: "soda",            kat: "Mixere", enhet: "cl", kjop: { type: "flaske", str: 150, tekst: "flaske à 1,5 l" } },
+    grapefruitbrus: { navn: "Grapefruitbrus", kort: "grapefruitbrus",           kat: "Mixere", enhet: "cl", kjop: { type: "flaske", str: 150, tekst: "flaske à 1,5 l" } },
+    appelsinjuice:  { navn: "Appelsinjuice", kort: "appelsinjuice",            kat: "Mixere", enhet: "cl", kjop: { type: "flaske", str: 100, tekst: "kartong à 1 l" } },
+    grenadine:      { navn: "Grenadine", kort: "grenadine",                kat: "Mixere", enhet: "cl", kjop: { type: "flaske", str: 70,  tekst: "flaske à 70 cl" } },
+    flote:          { navn: "Kremfløte", kort: "kremfløte",                kat: "Mixere", enhet: "cl", kjop: { type: "flaske", str: 50,  tekst: "kartong à 5 dl" } },
+    espresso:       { navn: "Espresso", kort: "espresso",                 kat: "Mixere", enhet: "cl", kjop: { type: "kaffe", gPer: 2.7, tekst: "kaffe, ca. 8 g per shot à 3 cl" } },
+
+    limejuice:      { navn: "Limejuice, fersk", kort: "fersk limejuice",         kat: "Frukt og friskt", enhet: "cl", kjop: { type: "frukt", frukt: "lime", perFrukt: 3 } },
+    limebat:        { navn: "Limebåt", kort: "limebåt", kortN: "limebåter",                  kat: "Frukt og friskt", enhet: "stk", kjop: { type: "frukt", frukt: "lime", perFrukt: 6 } },
+    sitronsaft:     { navn: "Sitronsaft, fersk", kort: "fersk sitronsaft",        kat: "Frukt og friskt", enhet: "cl", kjop: { type: "frukt", frukt: "sitron", perFrukt: 4 } },
+    sitronskall:    { navn: "Sitronskall (pynt)", kort: "sitronskall", kortN: "sitronskall",       kat: "Frukt og friskt", enhet: "stk", kjop: { type: "frukt", frukt: "sitron", perFrukt: 6 } },
+    appelsinskall:  { navn: "Appelsinskall (pynt)", kort: "appelsinskall", kortN: "appelsinskall",     kat: "Frukt og friskt", enhet: "stk", kjop: { type: "frukt", frukt: "appelsin", perFrukt: 8 } },
+    appelsinskive:  { navn: "Appelsinskive (pynt)", kort: "appelsinskive", kortN: "appelsinskiver",     kat: "Frukt og friskt", enhet: "stk", kjop: { type: "frukt", frukt: "appelsin", perFrukt: 8 } },
+    mynte:          { navn: "Mynteblader", kort: "mynteblader",              kat: "Frukt og friskt", enhet: "blader", kjop: { type: "frukt", frukt: "mynte", perFrukt: 50 } },
+    egg:            { navn: "Eggehvite", kort: "eggehvite", kortN: "eggehviter",                kat: "Frukt og friskt", enhet: "stk", kjop: { type: "frukt", frukt: "egg", perFrukt: 1 } },
+
+    sukker:         { navn: "Sukker", kort: "sukker",                   kat: "Søtt", enhet: "ts", kjop: { type: "sukker", gPer: 4 } },
+    sukkersirup:    { navn: "Sukkersirup (1:1)", kort: "sukkersirup",        kat: "Søtt", enhet: "cl", kjop: { type: "sukker", gPer: 6 } },
+    honningsirup:   { navn: "Honningsirup (1:1)", kort: "honningsirup",       kat: "Søtt", enhet: "cl", kjop: { type: "honning", gPer: 7 } },
+    kaffebonner:    { navn: "Hele kaffebønner (pynt)", kort: "kaffebønne", kortN: "kaffebønner",  kat: "Søtt", enhet: "stk", kjop: { type: "ingen" } }
+  },
+
+  /* Hvordan frukt og annet handles inn */
+  frukt: {
+    lime:     { navn: "Lime",               enhet: "stk" },
+    sitron:   { navn: "Sitron",             enhet: "stk" },
+    appelsin: { navn: "Appelsin",           enhet: "stk" },
+    mynte:    { navn: "Mynte",              enhet: "potte/bunt" },
+    egg:      { navn: "Egg",                enhet: "stk" }
+  },
+  /* Tips / pourboire */
+  vipps: "948 62 106",
+
+  /* «Lag din egen» – husets spiskammer i logisk rekkefølge */
+  egen: {
+    maksSprit: 3,
+    maksTotalt: 8,
+    stiler: [
+      { id: "lang", navn: "Lang og leskende", besk: "Høyt glass med is, toppet med brus" },
+      { id: "kort", navn: "Kort og konsentrert", besk: "Lite glass, mer smak per slurk" },
+      { id: "fri", navn: "Bartenderen bestemmer", besk: "Overrask meg" }
+    ],
+    kategorier: [
+      { id: "sprit",  navn: "Brennevin",            ing: ["gin", "vodka", "lys_rom", "mork_rom", "whisky", "tequila"] },
+      { id: "likor",  navn: "Likører",              ing: ["amaretto", "kahlua", "triple_sec"] },
+      { id: "sitrus", navn: "Sitrus og juice",      ing: ["limejuice", "sitronsaft", "appelsinjuice"] },
+      { id: "brus",   navn: "Brus",                 ing: ["tonic", "ingefaerol", "cola", "soda", "grapefruitbrus"] },
+      { id: "sott",   navn: "Søtt, krem og kaffe",  ing: ["sukkersirup", "honningsirup", "grenadine", "flote", "espresso", "egg"] },
+      { id: "aroma",  navn: "Aroma og pynt",        ing: ["mynte", "bitter", "limebat", "appelsinskall", "kaffebonner"] }
+    ],
+    navn: {
+      gin: "Gin", vodka: "Vodka", lys_rom: "Lys rom", mork_rom: "Mørk rom", whisky: "Whisky", tequila: "Tequila",
+      amaretto: "Amaretto", kahlua: "Kaffelikør", triple_sec: "Triple sec (appelsinlikør)",
+      limejuice: "Fersk lime", sitronsaft: "Fersk sitron", appelsinjuice: "Appelsinjuice",
+      tonic: "Tonic", ingefaerol: "Ingefærøl", cola: "Cola", soda: "Soda", grapefruitbrus: "Grapefruitbrus",
+      sukkersirup: "Sukkersirup", honningsirup: "Honningsirup", grenadine: "Grenadine", flote: "Kremfløte", espresso: "Espresso", egg: "Eggehvite (gir skum)",
+      mynte: "Fersk mynte", bitter: "Angostura bitter", limebat: "Limebåt", appelsinskall: "Appelsinskall", kaffebonner: "Kaffebønner"
+    }
+  },
+  isKgPerDrink: 0.3,
+  isPoseKg: 2,
+  sikkerhetsmargin: 0.10,
+
+  drinker: [
+    {
+      id: "gt", navn: "L'Heure Bleue", ekte: "Gin & Tonic", seksjon: "rafraichissements",
+      tagline: "Einer og kinin i skumringens første minutt.",
+      beskrivelse: "Det finnes et øyeblikk etter solnedgang da himmelen blir blå og ingen har bestemt seg for kvelden ennå. Vi har fanget det i et glass: einerbær, bitter kinin og et presset glimt av lime. Klar som krystall, tørr som en britisk kommentar.",
+      iGlasset: "Gin · tonic · lime",
+      menyIng: "5 cl gin · 15 cl tonic · presset limebåt",
+      glass: "Highball eller ballongglass", pynt: "Limebåt",
+      oppskrift: [ { i: "gin", m: 5 }, { i: "tonic", m: 15 }, { i: "limebat", m: 1, vis: "1 limebåt, presset" } ],
+      metode: [ "Fyll glasset helt med is.", "Hell i gin, topp med tonic.", "Press limebåten over og slipp den i. Rør forsiktig én gang." ]
+    },
+    {
+      id: "mule", navn: "Le Tsar en Cavale", ekte: "Moscow Mule", seksjon: "rafraichissements",
+      tagline: "En keiserlig flukt gjennom snøstorm – med ingefær i lomma.",
+      beskrivelse: "Vodka like kald som steppene han forlot, ingefærøl som brenner som en hemmelighet han aldri fortalte, og lime som den siste solstrålen før grensen. Serveres til dem som ikke har tenkt å bli tatt.",
+      iGlasset: "Vodka · ingefærøl · lime",
+      menyIng: "5 cl vodka · 10 cl ingefærøl · 1 cl fersk lime",
+      glass: "Kobberkrus eller highball", pynt: "Limebåt",
+      oppskrift: [ { i: "vodka", m: 5 }, { i: "ingefaerol", m: 10 }, { i: "limejuice", m: 1 }, { i: "limebat", m: 1, pynt: true } ],
+      metode: [ "Fyll glasset med is.", "Hell i vodka og limejuice.", "Topp med ingefærøl, rør én gang. Pynt med limebåt." ]
+    },
+    {
+      id: "cuba", navn: "La Jeunesse Retrouvée", ekte: "Cuba Libre", seksjon: "rafraichissements",
+      tagline: "Drinken fra da vi var sytten – nå i dress.",
+      beskrivelse: "Husker du den første? Lunken, i et plastbeger, bak en gymsal. Dette er den samme historien, fortalt på nytt av noen som har lært seg manerer: lys rom, iskald cola og lime presset rett over. Vi har blitt voksne. Nesten.",
+      iGlasset: "Lys rom · cola · lime",
+      menyIng: "5 cl lys rom · 12 cl cola · presset limebåt",
+      glass: "Highball", pynt: "Limebåt",
+      oppskrift: [ { i: "lys_rom", m: 5 }, { i: "cola", m: 12 }, { i: "limebat", m: 1, vis: "1 limebåt, presset" } ],
+      metode: [ "Fyll glasset med is.", "Hell i rom, topp med cola.", "Press limebåten over og slipp den i." ]
+    },
+    {
+      id: "sunrise", navn: "Impression, Soleil Levant", ekte: "Tequila Sunrise", seksjon: "rafraichissements",
+      tagline: "Monet malte en soloppgang. Vi heller en.",
+      beskrivelse: "Le Havre, 1872: en maler setter penselen mot et lerret av tåke og oransje lys. Her er vår gjengivelse – tequila og appelsin, med grenadine som synker som morgenrøde mot bunnen. Se på den et øyeblikk før du drikker. I noen sekunder er den et mesterverk.",
+      iGlasset: "Tequila · appelsin · grenadine",
+      menyIng: "5 cl tequila · 10 cl appelsinjuice · 1,5 cl grenadine",
+      glass: "Highball", pynt: "Appelsinskive",
+      oppskrift: [ { i: "tequila", m: 5 }, { i: "appelsinjuice", m: 10 }, { i: "grenadine", m: 1.5 }, { i: "appelsinskive", m: 1, pynt: true } ],
+      metode: [ "Fyll glasset med is, hell i tequila og appelsinjuice og rør.", "Hell grenadinen sakte langs innsiden av glasset så den synker til bunns.", "Ikke rør etterpå! Pynt med appelsinskive." ]
+    },
+    {
+      id: "paloma", navn: "La Colombe Amoureuse", ekte: "Paloma", seksjon: "rafraichissements",
+      tagline: "Lett som en due, bitter som et gammelt kjærlighetsbrev.",
+      beskrivelse: "Paloma betyr due, og denne flyr lett. Tequila, perlende grapefrukt og lime – en drink som flørter litt med alle rundt bordet og aldri helt bestemmer seg. Bitter nok til å være ærlig, søt nok til å bli tilgitt.",
+      iGlasset: "Tequila · grapefruitbrus · lime",
+      menyIng: "5 cl tequila · 10 cl grapefruitbrus · 1 cl fersk lime",
+      glass: "Highball", pynt: "Limebåt",
+      oppskrift: [ { i: "tequila", m: 5 }, { i: "grapefruitbrus", m: 10 }, { i: "limejuice", m: 1 }, { i: "limebat", m: 1, pynt: true } ],
+      metode: [ "Fyll glasset med is.", "Hell i tequila og limejuice.", "Topp med grapefruitbrus, rør én gang. Pynt med limebåt." ]
+    },
+    {
+      id: "mojito", navn: "Le Jardin Secret", ekte: "Mojito", seksjon: "rafraichissements",
+      tagline: "En liten ferie du kan holde i hånden.",
+      beskrivelse: "Bak en port ingen andre vet om, vokser mynten vill. Vi knuser bladene varsomt, som om de betrodde oss noe, og blander dem med lys rom, lime og sukker før boblene får det siste ordet. Friskt som et åpent vindu en sommermorgen.",
+      iGlasset: "Lys rom · mynte · lime · sukker · soda",
+      menyIng: "5 cl lys rom · 2,5 cl fersk lime · 2 ts sukker · mynte · soda",
+      glass: "Highball", pynt: "Myntekvast",
+      oppskrift: [ { i: "lys_rom", m: 5 }, { i: "limejuice", m: 2.5 }, { i: "sukker", m: 2 }, { i: "mynte", m: 10, vis: "ca. 10 mynteblader" }, { i: "soda", m: 5, vis: "Topp med soda (ca. 5 cl)" } ],
+      metode: [ "Legg mynte, sukker og limejuice i glasset. Knus mynten forsiktig (ikke mos den).", "Fyll glasset med is (gjerne knust) og hell i rom.", "Topp med soda og rør fra bunnen. Pynt med en myntekvast." ]
+    },
+    {
+      id: "dark", navn: "Le Naufrage Élégant", ekte: "Dark 'n' Stormy", seksjon: "rafraichissements",
+      tagline: "Et uvær i glass. Gå under med stil.",
+      beskrivelse: "Mørk rom synker som et vrak gjennom skummende ingefærøl, mens limen blinker som et fyrtårn i det fjerne. Himmelen er svart, sjøen er vill, og kapteinen har bestemt seg for å nyte det. Det har vi også.",
+      iGlasset: "Mørk rom · ingefærøl · lime",
+      menyIng: "5 cl mørk rom · 10 cl ingefærøl · presset limebåt",
+      glass: "Highball", pynt: "Limebåt",
+      oppskrift: [ { i: "mork_rom", m: 5 }, { i: "ingefaerol", m: 10 }, { i: "limebat", m: 1, vis: "1 limebåt, presset" } ],
+      metode: [ "Fyll glasset med is og hell i ingefærølet først.", "Hell den mørke rommen sakte over baksiden av en skje, så den legger seg øverst som en storm.", "Press limebåten over og slipp den i." ]
+    },
+    {
+      id: "oldf", navn: "L'Héritage", ekte: "Old Fashioned", seksjon: "classiques",
+      tagline: "Rørt med tålmodigheten til gamle penger.",
+      beskrivelse: "Fra et skinnkledd bibliotek der klokken tikker saktere enn ellers. Whisky, et snev av sukker og tre dråper bitter, rørt til den blir silke og servert over én stor isbit. En drink man ikke drikker, men arver. Nytes sittende, gjerne med en betydningsfull pause.",
+      iGlasset: "Whisky · sukker · Angostura",
+      menyIng: "6 cl whisky · 1 cl sukkersirup · 3 dråper Angostura · en skvett soda",
+      glass: "Lavt tumblerglass, gjerne med én stor isbit", pynt: "Appelsinskall",
+      oppskrift: [ { i: "whisky", m: 6 }, { i: "sukkersirup", m: 1 }, { i: "bitter", m: 3, vis: "3 dråper Angostura" }, { i: "soda", m: 1, vis: "En skvett soda" }, { i: "appelsinskall", m: 1, pynt: true } ],
+      metode: [ "Rør whisky, sukkersirup og bitter med is i 20–30 sekunder.", "Sil over i glass med en stor isbit, og tilsett en skvett soda.", "Vri appelsinskallet over glasset og legg det oppi." ]
+    },
+    {
+      id: "amaretto", navn: "Le Velours d'Amande", ekte: "Amaretto Sour", seksjon: "classiques",
+      tagline: "Mandel, sitron og et skum som burde vært forbudt.",
+      beskrivelse: "Stryk fingeren over fløyel, og du vet omtrent hvordan denne kjennes. Amaretto og fersk sitron hviler under en sky av pisket eggehvite, så myk at den nesten er uanstendig. Søt, sur og helt uten skam. Drikk den langsomt, og la barten være i fred.",
+      iGlasset: "Amaretto · sitron · eggehvite",
+      menyIng: "6 cl amaretto · 3 cl fersk sitron · 1,5 cl sukkersirup · eggehvite",
+      glass: "Tumbler med is", pynt: "Sitronskall",
+      oppskrift: [ { i: "amaretto", m: 6 }, { i: "sitronsaft", m: 3 }, { i: "sukkersirup", m: 1.5 }, { i: "egg", m: 1, vis: "Eggehviten fra 1 egg" }, { i: "sitronskall", m: 1, pynt: true } ],
+      metode: [ "Rist alt UTEN is i 10 sekunder (det gir skummet).", "Tilsett is og rist hardt i 10 sekunder til.", "Sil over i glass med is. Pynt med sitronskall." ]
+    },
+    {
+      id: "bees", navn: "Les Genoux de l'Abeille", ekte: "Bee's Knees", seksjon: "classiques",
+      tagline: "Forbudstid, jazz og honning.",
+      beskrivelse: "Oppfunnet i forbudstiden, da ginen ble brent i badekar og honningen måtte skjule forbrytelsen. Ginen er heldigvis lovlig nå, men honningen beholdt vi av ren nostalgi. Sitron, gull og saksofon – «the bee's knees» var 1920-tallets måte å si «det aller beste» på.",
+      iGlasset: "Gin · honning · sitron",
+      menyIng: "5 cl gin · 2 cl fersk sitron · 2 cl honningsirup",
+      glass: "Coupe eller cocktailglass, gjerne kjølt", pynt: "Sitronskall",
+      oppskrift: [ { i: "gin", m: 5 }, { i: "sitronsaft", m: 2 }, { i: "honningsirup", m: 2 }, { i: "sitronskall", m: 1, pynt: true } ],
+      metode: [ "Rist alt hardt med is i 12 sekunder.", "Sil over i et kjølt glass uten is.", "Pynt med sitronskall." ]
+    },
+    {
+      id: "whip", navn: "Le Fouet Doré", ekte: "Orange Whip", seksjon: "gourmandises",
+      tagline: "Iskrem for voksne. Ingen trenger den. Alle vil ha den.",
+      beskrivelse: "En kremet, oransje overdådighet med tre sorter brennevin, fordi to hadde vært for beskjedent. Vodka, lys rom og appelsinlikør virvles sammen med appelsinjuice og fløte til noe som smaker som en sommerferie på syttitallet. Kjent fra en viss film der noen bestiller tre på rad. Vi anbefaler det samme.",
+      iGlasset: "Vodka · lys rom · appelsinlikør · appelsin · fløte",
+      menyIng: "2 cl vodka · 2 cl lys rom · 2 cl triple sec · 4 cl appelsinjuice · 2 cl fløte",
+      glass: "Tumbler eller highball med is", pynt: "Appelsinskive",
+      oppskrift: [ { i: "vodka", m: 2 }, { i: "lys_rom", m: 2 }, { i: "triple_sec", m: 2 }, { i: "appelsinjuice", m: 4 }, { i: "flote", m: 2 }, { i: "appelsinskive", m: 1, pynt: true } ],
+      metode: [ "Rist alt med is i 10 sekunder.", "Sil over i glass med fersk is.", "Pynt med appelsinskive." ]
+    },
+    {
+      id: "wr", navn: "Le Duc en Peignoir", ekte: "White Russian", seksjon: "gourmandises",
+      tagline: "For aristokraten som har gitt opp alt unntatt kosen.",
+      beskrivelse: "Hertugen har ikke kledd på seg i dag, og han har ingen planer om å gjøre det. Vodka og kaffelikør under et teppe av kald fløte – en drink for morgenkåpe, tøfler og store tanker som aldri blir til noe. Ro, rikdom og null forpliktelser.",
+      iGlasset: "Vodka · kaffelikør · fløte",
+      menyIng: "5 cl vodka · 2,5 cl kaffelikør · 3 cl kremfløte",
+      glass: "Lavt tumblerglass", pynt: "Ingen – fløten er pynten",
+      oppskrift: [ { i: "vodka", m: 5 }, { i: "kahlua", m: 2.5 }, { i: "flote", m: 3 } ],
+      metode: [ "Fyll glasset med is, hell i vodka og kaffelikør.", "Hell fløten sakte over baksiden av en skje så den legger seg øverst.", "Serveres urørt – gjesten rører selv." ]
+    },
+    {
+      id: "em", navn: "L'Insomnie Parisienne", ekte: "Espresso Martini", seksjon: "gourmandises",
+      tagline: "Søvn er for dem som ikke ble invitert.",
+      beskrivelse: "Klokken har passert midnatt, men samtalen nekter å dø. Fersk espresso, vodka og kaffelikør ristes hardt til en fløyelsbrun crema og krones med tre bønner: én for helse, én for rikdom, én for lykke. Paris sover aldri, og det skal ikke du heller.",
+      iGlasset: "Vodka · espresso · kaffelikør",
+      menyIng: "5 cl vodka · 2,5 cl kaffelikør · 3 cl espresso · 1 cl sukkersirup",
+      glass: "Coupe eller martiniglass, gjerne kjølt", pynt: "3 kaffebønner",
+      oppskrift: [ { i: "vodka", m: 5 }, { i: "kahlua", m: 2.5 }, { i: "espresso", m: 3 }, { i: "sukkersirup", m: 1 }, { i: "kaffebonner", m: 3, pynt: true } ],
+      metode: [ "Lag en fersk espresso (3 cl).", "Rist alt veldig hardt med mye is i 15 sekunder – det gir cremaen.", "Sil over i kjølt glass. Legg tre kaffebønner på skummet." ]
+    }
+  ]
+};
+
+/* ---------- «Lag din egen» ---------- */
+BAR.egenKategori = function (id) { var k = BAR.egen.kategorier; for (var i = 0; i < k.length; i++) if (k[i].ing.indexOf(id) >= 0) return k[i].id; return null; };
+BAR.egenAlkohol = function (liste) { return liste.filter(function (i) { var k = BAR.egenKategori(i); return k === "sprit" || k === "likor"; }); };
+
+/* Sjekker et valg fra gjesten. Returnerer feilmelding eller null. */
+BAR.egenSjekk = function (e, tomt) {
+  if (!e || !e.ing || !e.ing.length) return "Velg minst én ingrediens.";
+  var sett = {};
+  for (var i = 0; i < e.ing.length; i++) {
+    var id = e.ing[i];
+    if (!BAR.egenKategori(id)) return "Ukjent ingrediens.";
+    if (sett[id]) return "Samme ingrediens er valgt to ganger.";
+    if (tomt && tomt.indexOf(id) >= 0) return BAR.egen.navn[id] + " er dessverre tomt.";
+    sett[id] = 1;
+  }
+  if (e.ing.length > BAR.egen.maksTotalt) return "Maks " + BAR.egen.maksTotalt + " ingredienser.";
+  if (BAR.egenAlkohol(e.ing).length > BAR.egen.maksSprit) return "Maks " + BAR.egen.maksSprit + " sorter brennevin eller likør.";
+  var stilOk = false; BAR.egen.stiler.forEach(function (s) { if (s.id === e.stil) stilOk = true; });
+  if (!stilOk) return "Velg hvordan du vil ha drinken.";
+  return null;
+};
+
+/* Kort liste med ingrediensnavn i spiskammer-rekkefølge */
+BAR.egenSortert = function (liste) {
+  var ut = [];
+  BAR.egen.kategorier.forEach(function (k) { k.ing.forEach(function (i) { if (liste.indexOf(i) >= 0) ut.push(i); }); });
+  return ut;
+};
+BAR.egenTekst = function (liste) { return BAR.egenSortert(liste).map(function (i) { return BAR.egen.navn[i]; }).join(" · "); };
+
+/* Forslag til bartenderen: mengder, metode og glass */
+BAR.egenForslag = function (e) {
+  var ing = BAR.egenSortert(e.ing || []);
+  var har = function (i) { return ing.indexOf(i) >= 0; };
+  var kat = function (k) { return ing.filter(function (i) { return BAR.egenKategori(i) === k; }); };
+  var sprit = kat("sprit"), likor = kat("likor"), sitrus = kat("sitrus"), brus = kat("brus"), sott = kat("sott"), aroma = kat("aroma");
+  var lang = e.stil === "lang" || (e.stil === "fri" && brus.length > 0);
+  var halv = function (x) { return Math.max(0.5, Math.round(x * 2) / 2); };
+  var linjer = [];
+  var legg = function (i, m, tekst) { linjer.push({ i: i, m: m, tekst: tekst }); };
+  // Alkohol: brennevin teller dobbelt så mye som likør
+  var alkohol = sprit.concat(likor), total = lang ? 5 : 6;
+  var vekt = 0; alkohol.forEach(function (i) { vekt += BAR.egenKategori(i) === "sprit" ? 2 : 1; });
+  alkohol.forEach(function (i) { var m = halv(total * (BAR.egenKategori(i) === "sprit" ? 2 : 1) / vekt); legg(i, m, BAR.tall(m) + " cl " + BAR.egen.navn[i].toLowerCase().replace(/ \(.*\)$/, "")); });
+  sitrus.forEach(function (i) {
+    var m = i === "appelsinjuice" ? (lang ? (brus.length ? 6 : 10) : 3) : (lang ? 1.5 : 2);
+    legg(i, m, BAR.tall(m) + " cl " + BAR.egen.navn[i].toLowerCase());
+  });
+  sott.forEach(function (i) {
+    if (i === "egg") return legg(i, 1, "Eggehviten fra 1 egg");
+    var m = i === "flote" ? 3 : i === "espresso" ? 3 : i === "grenadine" ? 1.5 : (lang ? 1 : 1.5);
+    legg(i, m, BAR.tall(m) + " cl " + BAR.egen.navn[i].toLowerCase());
+  });
+  if (brus.length) {
+    var bt = lang ? 12 : 3;
+    brus.forEach(function (i) { var m = halv(bt / brus.length); legg(i, m, (lang ? "" : "En skvett ") + BAR.tall(m) + " cl " + BAR.egen.navn[i].toLowerCase()); });
+  }
+  aroma.forEach(function (i) {
+    var t = { mynte: "Ca. 8 mynteblader", bitter: "2–3 dråper Angostura", limebat: "1 limebåt", appelsinskall: "1 appelsinskall", kaffebonner: "3 kaffebønner" }[i];
+    legg(i, i === "mynte" ? 8 : i === "bitter" ? 3 : i === "kaffebonner" ? 3 : 1, t);
+  });
+  var metode = [];
+  var ristes = har("egg") || har("flote") || har("espresso") || ((sitrus.length || sott.length) && !brus.length && !lang);
+  if (har("mynte")) metode.push("Knus mynten forsiktig i bunnen av glasset (eller shakeren) først.");
+  if (har("egg")) metode.push("Rist " + (brus.length ? "alt unntatt brus" : "alt") + " uten is i 10 sekunder – det gir skummet.");
+  if (ristes) metode.push("Rist" + (brus.length ? " alt unntatt brus" : "") + " hardt med is i 10–12 sekunder og sil over i glasset" + (lang ? " med fersk is." : "."));
+  else if (brus.length) metode.push("Fyll glasset med is og hell i alt unntatt brusen. Rør én gang.");
+  else metode.push("Rør med is i 20 sekunder og sil over i glass med is.");
+  if (brus.length) metode.push("Topp med " + brus.map(function (i) { return BAR.egen.navn[i].toLowerCase(); }).join(" og ") + ".");
+  else if (lang && !har("appelsinjuice")) metode.push("Gjesten ville ha en lang drink, men valgte ingen brus – topp gjerne med litt soda.");
+  var pynt = aroma.filter(function (i) { return i === "limebat" || i === "appelsinskall" || i === "kaffebonner"; });
+  if (pynt.length) metode.push("Pynt med " + pynt.map(function (i) { return BAR.egen.navn[i].toLowerCase(); }).join(" og ") + ".");
+  var glass = lang ? "Highball med is" : ((har("egg") || har("espresso")) && !brus.length ? "Coupe eller cocktailglass" : "Tumbler med is");
+  return { linjer: linjer, metode: metode, glass: glass, alkoholfri: alkohol.length === 0, lang: lang };
+};
+
+/* ---------- Beregninger (brukes av kjøkkenets kalkulator og tester) ---------- */
+BAR.finnDrink = function (id) { for (var k = 0; k < BAR.drinker.length; k++) if (BAR.drinker[k].id === id) return BAR.drinker[k]; return null; };
+
+/* Formater tall norsk: 2.5 -> "2,5" */
+BAR.tall = function (x, des) {
+  if (des === undefined) des = 1;
+  var f = Math.pow(10, des), r = Math.round(x * f) / f;
+  return String(r).replace(".", ",");
+};
+
+/* Tekst for én ingredienslinje i en oppskrift, ganget med antall */
+BAR.linjeTekst = function (linje, antall) {
+  antall = antall || 1;
+  var ing = BAR.ingredienser[linje.i];
+  if (linje.vis && antall === 1) return linje.vis;
+  var m = linje.m * antall;
+  var navn = ing.kort || ing.navn;
+  if (ing.enhet === "stk") return BAR.tall(m) + " " + (m > 1 && ing.kortN ? ing.kortN : navn);
+  if (ing.enhet === "ts") return BAR.tall(m) + " ts " + navn;
+  if (ing.enhet === "blader") return "ca. " + BAR.tall(m, 0) + " " + navn;
+  if (ing.enhet === "dråper") return BAR.tall(m, 0) + " dråper " + navn;
+  return BAR.tall(m) + " cl " + navn;
+};
+
+/* antall = { drinkId: n }. Returnerer forbruk per ingrediens og en handleliste. */
+BAR.beregn = function (antall, opts) {
+  opts = opts || {};
+  var margin = opts.margin !== undefined ? opts.margin : BAR.sikkerhetsmargin;
+  var str = opts.flaskestr || {};
+  var forbruk = {}, totalDrinker = 0;
+  BAR.drinker.forEach(function (d) {
+    var n = Number(antall[d.id]) || 0;
+    if (n <= 0) return;
+    totalDrinker += n;
+    d.oppskrift.forEach(function (l) {
+      forbruk[l.i] = (forbruk[l.i] || 0) + l.m * n;
+    });
+  });
+
+  var linjer = [], frukt = {}, sukkerG = 0, honningG = 0, kaffeG = 0;
+  Object.keys(BAR.ingredienser).forEach(function (id) {
+    var mengde = forbruk[id] || 0;
+    if (!mengde) return;
+    var ing = BAR.ingredienser[id], k = ing.kjop;
+    if (k.type === "flaske") {
+      var s = Number(str[id]) || k.str;
+      var flasker = Math.ceil((mengde * (1 + margin)) / s - 1e-9);
+      linjer.push({ id: id, navn: ing.navn, kat: ing.kat, mengde: mengde, enhet: ing.enhet, kjop: flasker, kjopTekst: k.tekst, str: s });
+    } else if (k.type === "frukt") {
+      frukt[k.frukt] = (frukt[k.frukt] || 0) + mengde / k.perFrukt;
+    } else if (k.type === "sukker") {
+      sukkerG += mengde * k.gPer;
+    } else if (k.type === "honning") {
+      honningG += mengde * k.gPer;
+    } else if (k.type === "kaffe") {
+      kaffeG += mengde * k.gPer;
+    }
+  });
+
+  var andre = [];
+  Object.keys(BAR.frukt).forEach(function (f) {
+    if (!frukt[f]) return;
+    var n = Math.ceil(frukt[f] * (1 + margin) - 1e-9);
+    andre.push({ id: f, navn: BAR.frukt[f].navn, kjop: n, enhet: BAR.frukt[f].enhet });
+  });
+  if (sukkerG) andre.push({ id: "sukker_g", navn: "Sukker (til sukkersirup og mojito)", kjop: Math.ceil(sukkerG * (1 + margin) / 50) * 50, enhet: "g" });
+  if (honningG) andre.push({ id: "honning_g", navn: "Honning (til honningsirup)", kjop: Math.ceil(honningG * (1 + margin) / 50) * 50, enhet: "g" });
+  if (kaffeG) andre.push({ id: "kaffe_g", navn: "Espressokaffe (+ noen hele bønner til pynt)", kjop: Math.ceil(kaffeG * (1 + margin) / 10) * 10, enhet: "g" });
+  var isKg = totalDrinker * BAR.isKgPerDrink * (1 + margin);
+  if (totalDrinker) andre.push({ id: "is", navn: "Isbiter", kjop: Math.ceil(isKg / BAR.isPoseKg - 1e-9), enhet: "poser à " + BAR.isPoseKg + " kg", kg: isKg });
+
+  return { totalDrinker: totalDrinker, forbruk: forbruk, flasker: linjer, andre: andre };
+};
+
+if (typeof module !== "undefined" && module.exports) module.exports = BAR;
+</script>
+<script>/* Felles klientkode for gjeste- og kjøkkensiden */
+(function () {
+  var CFG = self.BAR_CONFIG || window.BAR_CONFIG || {};
+  var API_URL = String(CFG.api || "");
+  var MODUS = CFG.modus || "github";
+
+  function lsGet(k) { try { return localStorage.getItem("mr_" + k); } catch (e) { return MINNE[k] || null; } }
+  function lsSet(k, v) { MINNE[k] = v; try { localStorage.setItem("mr_" + k, v); } catch (e) { } }
+  function lsDel(k) { delete MINNE[k]; try { localStorage.removeItem("mr_" + k); } catch (e) { } }
+  var MINNE = {};
+
+  function nyId(n) {
+    var a = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789", s = "";
+    var r = (window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint8Array(n || 16)) : null;
+    for (var i = 0; i < (n || 16); i++) s += a[(r ? r[i] : Math.floor(Math.random() * 256)) % a.length];
+    return s;
+  }
+
+  function harGsr() { return MODUS === "gas" && window.google && google.script && google.script.run; }
+  function konfigurert() { return !!harGsr() || /^https:\/\/script\.google(usercontent)?\.com\//.test(API_URL); }
+
+  /* Kaller Apps Script. Prøver på nytt ved nettverksfeil. Alle handlinger er trygge å gjenta. */
+  function api(a, d, opt) {
+    opt = opt || {};
+    var forsok = opt.forsok === undefined ? 3 : opt.forsok;
+    var timeout = opt.timeout || 15000;
+    return new Promise(function (resolve, reject) {
+      if (!konfigurert()) return reject({ feil: "ikke_konfigurert", melding: "Systemet er ikke koblet til ennå (mangler Apps Script-lenken i config.js)." });
+      var nr = 0;
+      function provGsr() {
+        nr++;
+        var ferdig = false;
+        var t = setTimeout(function () { if (!ferdig) { ferdig = true; feilet("tidsavbrudd"); } }, timeout);
+        function feilet(err) {
+          if (nr < forsok) setTimeout(provGsr, 600 * nr * nr);
+          else reject({ feil: "nett", melding: "Fikk ikke kontakt med baren. Sjekk nettet og prøv igjen.", detalj: String(err) });
+        }
+        google.script.run
+          .withSuccessHandler(function (j) { if (ferdig) return; ferdig = true; clearTimeout(t); resolve(j); })
+          .withFailureHandler(function (e) { if (ferdig) return; ferdig = true; clearTimeout(t); feilet(e); })
+          .apiKall(a, d || {});
+      }
+      if (harGsr()) return provGsr();
+      function prov() {
+        nr++;
+        var url = API_URL + "?a=" + encodeURIComponent(a) + "&d=" + encodeURIComponent(JSON.stringify(d || {})) + "&_=" + Date.now();
+        var ctrl = window.AbortController ? new AbortController() : null;
+        var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, timeout);
+        fetch(url, { method: "GET", credentials: "omit", cache: "no-store", redirect: "follow", signal: ctrl ? ctrl.signal : undefined })
+          .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+          .then(function (j) { clearTimeout(t); resolve(j); })
+          .catch(function (err) {
+            clearTimeout(t);
+            if (nr < forsok) setTimeout(prov, 600 * nr * nr);
+            else reject({ feil: "nett", melding: "Fikk ikke kontakt med baren. Sjekk nettet og prøv igjen.", detalj: String(err) });
+          });
+      }
+      prov();
+    });
+  }
+
+  /* Liten klokkelyd laget med Web Audio (ingen lydfil trengs) */
+  var lydCtx = null;
+  function lasOppLyd() {
+    try {
+      if (!lydCtx) lydCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (lydCtx.state === "suspended") lydCtx.resume();
+      var o = lydCtx.createOscillator(), g = lydCtx.createGain();
+      g.gain.value = 0.0001; o.connect(g); g.connect(lydCtx.destination); o.start(); o.stop(lydCtx.currentTime + 0.01);
+    } catch (e) { }
+  }
+  function klokke(type) {
+    try {
+      if (!lydCtx) return;
+      if (lydCtx.state === "suspended") lydCtx.resume();
+      var toner = type === "ny" ? [880, 1174.7] : [659.3, 830.6, 987.8, 1318.5];
+      toner.forEach(function (f, i) {
+        var t0 = lydCtx.currentTime + i * 0.16;
+        var o = lydCtx.createOscillator(), g = lydCtx.createGain();
+        o.type = "sine"; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(0.35, t0 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 1.1);
+        o.connect(g); g.connect(lydCtx.destination); o.start(t0); o.stop(t0 + 1.2);
+      });
+    } catch (e) { }
+  }
+
+  function esc(s) { return String(s === undefined || s === null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function klokkeslett(ms) { var d = new Date(ms); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
+  function minSiden(ms, na) { return Math.max(0, Math.floor(((na || Date.now()) - ms) / 60000)); }
+
+  function urlB64(s) {
+    var pad = "=".repeat((4 - (s.length % 4)) % 4), b = atob((s + pad).replace(/-/g, "+").replace(/_/g, "/"));
+    var out = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) out[i] = b.charCodeAt(i); return out;
+  }
+
+  window.MR = { API_URL: API_URL, MODUS: MODUS, api: api, konfigurert: konfigurert, lsGet: lsGet, lsSet: lsSet, lsDel: lsDel, nyId: nyId, lasOppLyd: lasOppLyd, klokke: klokke, esc: esc, klokkeslett: klokkeslett, minSiden: minSiden, urlB64: urlB64 };
+})();
+</script>
+<style>
+:root {
+  --papir: #F7F1E4; --papir2: #FBF7EE; --kort: #FFFDF8; --bord: #6B1E2E; --bord2: #4A1220; --gull: #A8864D; --gull2: #D8C39A;
+  --blekk: #2A2320; --dempet: #6F635A; --linje: #E4D7BD; --ok: #2F6B3A; --skygge: 0 1px 2px rgba(74,18,32,.06), 0 8px 24px rgba(74,18,32,.07);
+  --serif: 'EB Garamond', Georgia, 'Times New Roman', serif; --display: 'Cormorant Garamond', 'Cormorant', Georgia, serif; --sc: 'Cormorant SC', 'Cormorant Garamond', Georgia, serif;
+  --topp: env(safe-area-inset-top, 0px); --bunn: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { background: var(--papir); }
+body { margin: 0; min-height: 100dvh; background: var(--papir); color: var(--blekk); font-family: var(--serif); font-size: 17px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.skjerm { display: none; min-height: 100dvh; padding: calc(var(--topp) + 20px) 18px calc(var(--bunn) + 110px); max-width: 560px; margin: 0 auto; }
+.skjerm.vis { display: block; }
+.maison { font-family: var(--sc); font-weight: 600; letter-spacing: .26em; color: var(--gull); font-size: 13px; text-align: center; text-transform: uppercase; }
+.dato { font-family: var(--display); font-style: italic; color: var(--dempet); text-align: center; font-size: 16px; margin-top: 2px; }
+.orn { display: block; margin: 12px auto; width: 190px; height: 14px; }
+h1.stor { font-family: var(--display); font-style: italic; font-weight: 600; color: var(--bord); font-size: 50px; line-height: 1; text-align: center; margin: 22px 0 6px; }
+.lead { text-align: center; color: var(--dempet); font-size: 17.5px; margin: 0 auto 22px; max-width: 30em; }
+label.felt { display: block; font-family: var(--sc); font-weight: 600; letter-spacing: .08em; color: var(--bord); font-size: 15px; margin: 18px 0 6px; }
+input.inn, textarea.inn { width: 100%; font-size: 18px; padding: 14px 16px; border: 1px solid var(--gull2); border-radius: 12px; background: var(--kort); outline: none; transition: border-color .2s, box-shadow .2s; }
+input.inn:focus, textarea.inn:focus { border-color: var(--bord); box-shadow: 0 0 0 3px rgba(107,30,46,.12); }
+.hint { font-size: 14.5px; color: var(--dempet); font-style: italic; margin-top: 6px; }
+.knapp { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 54px; border: 0; border-radius: 14px; background: var(--bord); color: #FBF3E4; font-family: var(--sc); font-weight: 700; letter-spacing: .1em; font-size: 18px; padding: 12px 18px; margin-top: 20px; box-shadow: 0 6px 18px rgba(107,30,46,.25); transition: transform .08s, opacity .2s; }
+.knapp:active { transform: scale(.985); }
+.knapp[disabled] { opacity: .55; }
+.knapp.sekundar { background: transparent; color: var(--bord); box-shadow: none; border: 1px solid var(--gull2); }
+.lenke { background: none; border: 0; color: var(--dempet); text-decoration: underline; text-underline-offset: 3px; font-style: italic; font-size: 16px; padding: 12px; display: block; margin: 8px auto 0; }
+.feil { color: #9B1C1C; font-style: italic; margin-top: 10px; min-height: 1.2em; text-align: center; }
+.spinn { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spinn .8s linear infinite; }
+.knapp.sekundar .spinn { border-color: rgba(107,30,46,.25); border-top-color: var(--bord); }
+@keyframes spinn { to { transform: rotate(360deg); } }
+
+/* Installer-guide */
+.steg { list-style: none; padding: 0; margin: 18px 0 0; counter-reset: s; }
+.steg li { counter-increment: s; display: grid; grid-template-columns: 38px 1fr; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--linje); }
+.steg li::before { content: counter(s); width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--gull); color: var(--bord); font-family: var(--display); font-weight: 700; font-size: 20px; display: grid; place-items: center; }
+.steg b { color: var(--bord); font-weight: 600; }
+.ikon-del { display: inline-block; vertical-align: -3px; width: 18px; height: 20px; }
+.boks { background: var(--kort); border: 1px solid var(--linje); border-radius: 16px; padding: 16px 16px; box-shadow: var(--skygge); }
+.tlfrad { display: flex; gap: 8px; margin-top: 8px; }
+.tlfrad input { flex: 1; }
+.tlfrad button { flex: 0 0 auto; margin: 0; width: auto; min-height: 50px; padding: 0 16px; font-size: 15px; }
+
+/* Hovedskjerm */
+.topp { text-align: center; padding-top: 6px; }
+.topp .navn { font-family: var(--display); font-weight: 600; color: var(--bord); font-size: 34px; line-height: 1.05; font-style: italic; margin-top: 4px; }
+.banner { margin: 16px 0 4px; padding: 14px 16px; border-radius: 14px; background: #F3E3D6; border: 1px solid #E2BFA8; color: var(--bord2); text-align: center; }
+.banner b { font-family: var(--sc); letter-spacing: .06em; }
+.varselkort { margin: 16px 0 6px; background: var(--kort); border: 1px solid var(--gull2); border-radius: 16px; padding: 16px; box-shadow: var(--skygge); display: grid; grid-template-columns: 42px 1fr; gap: 12px; }
+.varselkort .kl { width: 42px; height: 42px; border-radius: 50%; background: var(--bord); display: grid; place-items: center; }
+.varselkort h3 { margin: 0; font-family: var(--display); font-size: 22px; color: var(--bord); font-weight: 700; line-height: 1.1; }
+.varselkort p { margin: 4px 0 0; font-size: 15.5px; color: var(--dempet); }
+.varselkort .knapp { margin-top: 12px; min-height: 48px; font-size: 16px; }
+.varselkort .lenke { margin: 4px 0 0; padding: 6px 0; font-size: 14.5px; text-align: left; }
+.ok-linje { color: var(--ok); font-size: 15px; margin-top: 4px; }
+.seksjon { margin: 30px 0 10px; text-align: center; }
+.seksjon h2 { font-family: var(--sc); font-weight: 700; color: var(--bord); font-size: 24px; letter-spacing: .06em; margin: 0; }
+.seksjon p { margin: 2px 0 0; font-family: var(--display); font-style: italic; color: var(--dempet); font-size: 17px; }
+.drink { display: block; width: 100%; text-align: left; background: var(--kort); border: 1px solid var(--linje); border-radius: 16px; padding: 16px 16px 14px; margin: 12px 0; box-shadow: var(--skygge); position: relative; transition: transform .1s; }
+.drink:active { transform: scale(.99); }
+.drink .fr { font-family: var(--display); font-weight: 700; font-style: italic; color: var(--bord); font-size: 25px; line-height: 1.05; padding-right: 26px; }
+.drink .var { font-family: var(--sc); font-weight: 600; color: var(--gull); letter-spacing: .08em; font-size: 14px; margin-top: 3px; }
+.drink .tag { font-style: italic; color: var(--blekk); font-size: 16.5px; margin-top: 8px; }
+.drink .ing { color: var(--dempet); font-size: 14.5px; margin-top: 6px; }
+.drink .pil { position: absolute; right: 14px; top: 18px; color: var(--gull); font-size: 22px; }
+.drink.utsolgt { opacity: .55; filter: grayscale(.4); }
+.drink .merke { display: inline-block; margin-top: 8px; font-family: var(--sc); font-weight: 700; letter-spacing: .08em; font-size: 13px; color: #fff; background: var(--dempet); border-radius: 999px; padding: 2px 10px; }
+.fot { text-align: center; font-style: italic; color: var(--dempet); font-size: 15px; margin: 30px 10px 0; }
+
+/* Faner nederst */
+.faner { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: rgba(251,247,238,.94); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-top: 1px solid var(--linje); display: none; padding-bottom: var(--bunn); }
+.faner.vis { display: flex; }
+.faner button { flex: 1; background: none; border: 0; padding: 12px 6px 10px; font-family: var(--sc); font-weight: 700; letter-spacing: .08em; font-size: 15px; color: var(--dempet); position: relative; }
+.faner button.aktiv { color: var(--bord); }
+.faner button.aktiv::after { content: ""; position: absolute; left: 30%; right: 30%; top: 0; height: 2px; background: var(--bord); }
+.faner .tall { display: inline-grid; place-items: center; min-width: 22px; height: 22px; border-radius: 11px; background: var(--bord); color: #fff; font-family: var(--serif); font-size: 13px; margin-left: 6px; padding: 0 6px; vertical-align: 1px; }
+.faner .tall.klar { background: var(--ok); }
+
+/* Bestillinger */
+.ordre { background: var(--kort); border: 1px solid var(--linje); border-radius: 16px; padding: 16px; margin: 12px 0; box-shadow: var(--skygge); }
+.ordre.ferdig { border-color: #9BC4A3; background: #F4FAF2; }
+.ordre .hode { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.ordre .fr { font-family: var(--display); font-weight: 700; font-style: italic; color: var(--bord); font-size: 23px; line-height: 1.1; }
+.ordre .nr { font-family: var(--sc); color: var(--gull); font-weight: 700; font-size: 15px; white-space: nowrap; }
+.ordre .var { color: var(--dempet); font-size: 14.5px; }
+.ordre .notat { font-style: italic; color: var(--dempet); font-size: 14.5px; margin-top: 4px; }
+.prog { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 14px 0 8px; }
+.prog span { height: 5px; border-radius: 3px; background: var(--linje); }
+.prog span.på { background: var(--bord); }
+.ordre.ferdig .prog span.på { background: var(--ok); }
+.status { font-family: var(--sc); font-weight: 700; letter-spacing: .06em; color: var(--bord); font-size: 17px; }
+.ordre.ferdig .status { color: var(--ok); }
+.status small { font-family: var(--serif); font-weight: 400; letter-spacing: 0; color: var(--dempet); font-size: 15px; display: block; margin-top: 1px; font-style: italic; }
+.ordre .avb { background: none; border: 0; color: var(--dempet); text-decoration: underline; font-size: 14.5px; padding: 8px 0 0; font-style: italic; }
+.tom { text-align: center; color: var(--dempet); font-style: italic; margin: 40px 20px; }
+
+/* Ark for valgt drink */
+.slor { position: fixed; inset: 0; background: rgba(42,35,32,.45); z-index: 40; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.slor.vis { opacity: 1; pointer-events: auto; }
+.ark { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; background: var(--papir2); border-radius: 22px 22px 0 0; max-height: 92dvh; overflow-y: auto; -webkit-overflow-scrolling: touch; transform: translateY(105%); transition: transform .32s cubic-bezier(.2,.8,.2,1); padding: 10px 20px calc(var(--bunn) + 20px); max-width: 620px; margin: 0 auto; box-shadow: 0 -10px 40px rgba(0,0,0,.15); }
+.ark.vis { transform: translateY(0); }
+.ark .handtak { width: 44px; height: 5px; border-radius: 3px; background: var(--gull2); margin: 4px auto 14px; }
+.ark .lukk { position: absolute; right: 12px; top: 10px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: transparent; font-size: 26px; color: var(--dempet); }
+.ark .fr { font-family: var(--display); font-weight: 700; font-style: italic; color: var(--bord); font-size: 34px; line-height: 1.02; text-align: center; margin-top: 6px; padding: 0 20px; }
+.ark .var { font-family: var(--sc); font-weight: 600; color: var(--gull); letter-spacing: .1em; font-size: 15px; text-align: center; margin-top: 6px; }
+.ark .besk { font-size: 17.5px; margin: 14px 0 0; }
+.ark .fakta { margin: 14px 0 0; font-size: 15px; color: var(--dempet); border-top: 1px solid var(--linje); padding-top: 10px; }
+.ark .fakta b { font-family: var(--sc); color: var(--bord); letter-spacing: .05em; font-weight: 700; }
+.teller { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; background: var(--kort); border: 1px solid var(--linje); border-radius: 14px; padding: 8px 10px 8px 16px; }
+.teller .lab { font-family: var(--sc); font-weight: 700; color: var(--bord); letter-spacing: .06em; }
+.teller .ktr { display: flex; align-items: center; gap: 6px; }
+.teller button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--gull2); background: var(--papir2); font-size: 22px; color: var(--bord); line-height: 1; }
+.teller button[disabled] { opacity: .35; }
+.teller .n { min-width: 34px; text-align: center; font-size: 22px; font-family: var(--display); font-weight: 700; }
+
+/* Klar-melding */
+.klar { position: fixed; inset: 0; z-index: 60; background: radial-gradient(ellipse at 50% 35%, #FFF9EC 0%, #F4E7CC 70%); display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 26px calc(var(--bunn) + 30px); }
+.klar.vis { display: flex; animation: inn .4s ease-out; }
+@keyframes inn { from { opacity: 0; transform: scale(1.03); } to { opacity: 1; transform: none; } }
+.klar .glass { width: 96px; height: 96px; }
+.klar h2 { font-family: var(--display); font-style: italic; font-weight: 700; color: var(--bord); font-size: 46px; line-height: 1; margin: 18px 0 10px; }
+.klar p { font-size: 20px; margin: 0 0 6px; max-width: 22em; }
+.klar .knapp { max-width: 340px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(var(--bunn) + 84px); transform: translate(-50%, 20px); background: var(--blekk); color: #FBF3E4; padding: 12px 18px; border-radius: 12px; font-size: 16px; z-index: 70; opacity: 0; pointer-events: none; transition: all .25s; max-width: 90vw; text-align: center; }
+.toast.vis { opacity: 1; transform: translate(-50%, 0); }
+.nettfeil { position: fixed; top: calc(var(--topp) + 8px); left: 50%; transform: translateX(-50%); background: #7A2E2E; color: #fff; font-size: 14px; padding: 6px 14px; border-radius: 999px; z-index: 50; display: none; }
+.nettfeil.vis { display: block; }
+#s-velkommen.venter form, #s-velkommen.venter .lead { visibility: hidden; }
+/* Lag din egen */
+.drink.egen { background: linear-gradient(160deg, #FFFDF8 0%, #F6EAD3 100%); border-color: var(--gull2); }
+.drink.egen .fr { font-size: 27px; }
+.stiler { display: grid; gap: 8px; margin-top: 8px; }
+.stiler button { text-align: left; background: var(--kort); border: 1px solid var(--linje); border-radius: 14px; padding: 12px 14px; }
+.stiler button b { font-family: var(--display); font-size: 20px; color: var(--bord); display: block; line-height: 1.1; }
+.stiler button span { font-size: 14.5px; color: var(--dempet); font-style: italic; }
+.stiler button.valgt { border: 2px solid var(--bord); background: #FBF1EC; padding: 11px 13px; }
+.katt { font-family: var(--sc); font-weight: 700; color: var(--gull); letter-spacing: .08em; font-size: 15px; margin: 16px 0 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-ing { border: 1px solid var(--gull2); background: var(--kort); border-radius: 999px; padding: 9px 14px; font-size: 16px; min-height: 42px; }
+.chip-ing.valgt { background: var(--bord); color: #FBF3E4; border-color: var(--bord); }
+.chip-ing.valgt::before { content: "✓ "; }
+.chip-ing[disabled] { opacity: .45; text-decoration: line-through; }
+.ark.bygger { padding-bottom: 0; }
+.egensum { position: sticky; bottom: 0; margin: 18px -20px 0; padding: 12px 20px calc(var(--bunn) + 14px); background: var(--papir2); border-top: 1px solid var(--linje); box-shadow: 0 -10px 18px rgba(251,247,238,.95); }
+body.ark-apen .toast { bottom: auto; top: calc(var(--topp) + 16px); transform: translate(-50%, -20px); }
+body.ark-apen .toast.vis { transform: translate(-50%, 0); }
+.egensum .linje { font-size: 15px; color: var(--dempet); min-height: 1.4em; }
+.egensum .linje b { color: var(--bord); }
+.egensum .knapp { margin-top: 10px; }
+.alkfri { display: inline-block; background: var(--ok); color: #fff; border-radius: 999px; font-size: 12.5px; padding: 1px 9px; margin-left: 6px; font-family: var(--serif); vertical-align: 2px; }
+/* Tips */
+.tips { margin: 26px 0 8px; text-align: center; border: 1px solid var(--gull2); border-radius: 18px; padding: 18px 16px; background: var(--kort); box-shadow: var(--skygge); }
+.tips h3 { margin: 0; font-family: var(--display); font-style: italic; font-weight: 700; color: var(--bord); font-size: 28px; }
+.tips p { margin: 4px 0 0; color: var(--dempet); font-style: italic; }
+.tips .nummer { font-family: var(--display); font-weight: 700; font-size: 32px; letter-spacing: .04em; color: var(--blekk); margin: 8px 0 2px; user-select: all; -webkit-user-select: all; }
+.tips .knapp { max-width: 300px; margin: 10px auto 0; min-height: 46px; font-size: 16px; }
+.oppsettfeil { margin: 30px 0; padding: 18px; border: 1px dashed #B45A5A; border-radius: 14px; background: #FFF4F2; color: #7A2E2E; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="orn" viewBox="0 0 190 14"><line x1="0" y1="7" x2="80" y2="7" stroke="#A8864D" stroke-width=".8"/><rect x="90" y="2" width="10" height="10" transform="rotate(45 95 7)" fill="none" stroke="#A8864D"/><circle cx="95" cy="7" r="1.6" fill="#A8864D"/><line x1="110" y1="7" x2="190" y2="7" stroke="#A8864D" stroke-width=".8"/></symbol>
+  <symbol id="del" viewBox="0 0 18 22"><path d="M9 1v13M4.5 5.5 9 1l4.5 4.5" fill="none" stroke="#6B1E2E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 9H3.2A1.2 1.2 0 0 0 2 10.2v9.6A1.2 1.2 0 0 0 3.2 21h11.6a1.2 1.2 0 0 0 1.2-1.2v-9.6A1.2 1.2 0 0 0 14.8 9h-2.3" fill="none" stroke="#6B1E2E" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="bjelle" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6v3.6L4.3 15.4A1 1 0 0 0 5.2 17h13.6a1 1 0 0 0 .9-1.6L18 12.6V9a6 6 0 0 0-6-6Zm-2.3 15.5a2.4 2.4 0 0 0 4.6 0" fill="none" stroke="#F3E3C4" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="coupe" viewBox="0 0 96 96"><path d="M18 22h60c0 18-13 30-30 30S18 40 18 22Z" fill="#6B1E2E" opacity=".9"/><path d="M22 26c3 12 13 20 26 20s23-8 26-20" fill="none" stroke="#D8C39A" stroke-width="1.5"/><path d="M48 52v26M34 80h28" stroke="#6B1E2E" stroke-width="3" stroke-linecap="round"/><circle cx="66" cy="16" r="3" fill="#A8864D"/><circle cx="74" cy="9" r="2" fill="#A8864D"/><circle cx="58" cy="10" r="1.6" fill="#A8864D"/></symbol>
+</svg>
+
+<div class="nettfeil" id="nettfeil">Mistet forbindelsen – prøver igjen …</div>
+
+<!-- 1. Velkommen -->
+<section class="skjerm" id="s-velkommen">
+  <div class="maison">Maison Retrouvailles</div>
+  <div class="dato" id="v-dato"></div>
+  <h1 class="stor">Bienvenue</h1>
+  <svg class="orn"><use href="#orn"/></svg>
+  <p class="lead">Kjære gjest, velkommen til en kveld med gamle venner og nye drikker. Hva skal baren kalle deg?</p>
+  <form id="navnskjema" autocomplete="off">
+    <label class="felt" for="navn">Ditt navn</label>
+    <input class="inn" id="navn" maxlength="30" placeholder="Fornavnet ditt" autocomplete="given-name" enterkeyhint="go">
+    <div class="hint">Navnet står på bestillingen, så baren vet hvem glasset er til. Er dere flere med samme navn, legg til første bokstav i etternavnet.</div>
+    <button class="knapp" type="submit" id="navnknapp">Entrez</button>
+    <div class="feil" id="navnfeil"></div>
+  </form>
+</section>
+
+<!-- 2. Legg til på Hjem-skjerm (iPhone i Safari) -->
+<section class="skjerm" id="s-installer">
+  <div class="maison">Maison Retrouvailles</div>
+  <h1 class="stor" style="font-size:40px">Få beskjed når glasset er klart</h1>
+  <svg class="orn"><use href="#orn"/></svg>
+  <p class="lead">Legg baren på Hjem-skjermen din. Da får du et varsel på telefonen i det øyeblikket drinken står klar – også når mobilen ligger i lomma.</p>
+  <div class="boks">
+    <ol class="steg">
+      <li><span>Trykk på <b>Del</b>-knappen <svg class="ikon-del"><use href="#del"/></svg> i Safari. På nyere iPhoner ligger den under <b>•••</b> nederst.</span></li>
+      <li><span>Bla litt ned og velg <b>«Legg til på Hjem-skjerm»</b>.</span></li>
+      <li><span>Trykk <b>«Legg til»</b>. Står det «Åpne som nettapp», lar du den være på.</span></li>
+      <li><span>Åpne <b>Retrouvailles</b> fra Hjem-skjermen og trykk <b>«Slå på varsler»</b>.</span></li>
+    </ol>
+  </div>
+  <p class="hint" style="text-align:center;margin-top:14px">Tar under et halvt minutt. Du slipper å skrive navnet på nytt.</p>
+  <button class="lenke" id="hoppover">Hopp over – bestill her i nettleseren</button>
+  <div id="i-tlf"></div>
+</section>
+
+<!-- 3. Hovedskjerm: meny -->
+<section class="skjerm" id="s-meny">
+  <div class="topp">
+    <div class="maison">Maison Retrouvailles</div>
+    <div class="navn">La Carte</div>
+    <div class="dato" id="m-dato"></div>
+    <svg class="orn"><use href="#orn"/></svg>
+  </div>
+  <div id="m-banner"></div>
+  <div id="m-varsel"></div>
+  <div id="m-liste"></div>
+  <p class="fot" id="m-fot"></p>
+</section>
+
+<!-- 4. Mine bestillinger -->
+<section class="skjerm" id="s-mine">
+  <div class="topp">
+    <div class="maison">Maison Retrouvailles</div>
+    <div class="navn">Mes Commandes</div>
+    <div class="dato" id="o-hei"></div>
+    <svg class="orn"><use href="#orn"/></svg>
+  </div>
+  <div id="o-varsel"></div>
+  <div id="o-liste"></div>
+</section>
+
+<nav class="faner" id="faner">
+  <button id="f-meny" class="aktiv">La Carte</button>
+  <button id="f-mine">Mes commandes<span class="tall" id="f-tall" style="display:none"></span></button>
+</nav>
+
+<div class="slor" id="slor"></div>
+<div class="ark" id="ark" role="dialog" aria-modal="true"></div>
+
+<div class="klar" id="klar" role="alertdialog">
+  <svg class="glass"><use href="#coupe"/></svg>
+  <h2>Votre verre est prêt</h2>
+  <p id="klar-tekst"></p>
+  <p class="hint" style="font-size:16px">Hent den i baren. Santé !</p>
+  <p class="hint" style="font-size:14.5px;margin-top:10px" id="klar-tips"></p>
+  <button class="knapp" id="klar-ok">Merci – jeg kommer</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = MR.esc;
+  var erIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var frittstaende = (window.navigator.standalone === true) || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+  // På iPhone virker push bare når siden er åpnet fra Hjem-skjermen
+  var stottePush = ("serviceWorker" in navigator) && ("PushManager" in window) && ("Notification" in window) && MR.MODUS !== "gas" && !(erIOS && !frittstaende);
+
+  /* ---------- Enhets-ID (token) ---------- */
+  var params = new URLSearchParams(location.search);
+  var urlToken = (params.get("g") || "").replace(/[^a-zA-Z0-9_-]/g, "");
+  var lagret = (MR.lsGet("token") || "").replace(/[^a-zA-Z0-9_-]/g, "");
+  // En delt lenke skal ikke gi noen andres identitet: ID fra adressen godtas bare i appen fra Hjem-skjermen
+  var token = (frittstaende && urlToken) ? urlToken : (lagret || MR.nyId(16));
+  MR.lsSet("token", token);
+  if (MR.MODUS !== "gas" && params.get("g") !== token) {
+    // Legg ID-en i adressen, så «Legg til på Hjem-skjerm» tar den med seg inn i appen
+    params.set("g", token);
+    location.replace(location.pathname + "?" + params.toString() + location.hash);
+    return;
+  }
+
+  var tilstand = {
+    navn: MR.lsGet("navn") || "", tlf: MR.lsGet("tlf") || "",
+    utsolgt: [], tomt: [], apen: true, melding: "", vapid: "",
+    ordre: [], sistStatus: {}, forsteLasting: true, harVarsel: false, fane: "meny",
+  };
+  try { tilstand.sistStatus = JSON.parse(MR.lsGet("sist") || "{}"); } catch (e) { }
+
+  $("v-dato").textContent = $("m-dato").textContent = BAR.dato;
+  $("m-fot").textContent = BAR.fotnote;
+
+  function toast(t, ms) {
+    var el = $("toast"); el.textContent = t; el.classList.add("vis");
+    clearTimeout(toast._t); toast._t = setTimeout(function () { el.classList.remove("vis"); }, ms || 2800);
+  }
+  var nettFeil = 0;
+  function nettOk(ok) { nettFeil = ok ? 0 : nettFeil + 1; $("nettfeil").classList.toggle("vis", nettFeil >= 2); }
+
+  function visSkjerm(id) {
+    ["s-velkommen", "s-installer", "s-meny", "s-mine"].forEach(function (s) { $(s).classList.toggle("vis", s === id); });
+    $("faner").classList.toggle("vis", id === "s-meny" || id === "s-mine");
+    window.scrollTo(0, 0);
+  }
+  function velgFane(f) {
+    tilstand.fane = f;
+    $("f-meny").classList.toggle("aktiv", f === "meny");
+    $("f-mine").classList.toggle("aktiv", f === "mine");
+    visSkjerm(f === "meny" ? "s-meny" : "s-mine");
+    if (f === "mine") hentMine();
+  }
+  $("f-meny").onclick = function () { velgFane("meny"); };
+  $("f-mine").onclick = function () { velgFane("mine"); };
+
+  /* ---------- Oppstart ---------- */
+  function start() {
+    if (!MR.konfigurert()) {
+      visSkjerm("s-meny");
+      $("m-liste").innerHTML = '<div class="oppsettfeil"><b>Nesten klart!</b><br>Siden er ikke koblet til bestillingssystemet ennå. Lim inn nettadressen fra Google Apps Script i filen <b>config.js</b> (se oppsettguiden).</div>';
+      return;
+    }
+    registrerSW();
+    MR.api("meny", {}).then(function (m) {
+      tilstand.utsolgt = m.utsolgt || []; tilstand.tomt = m.tomt || []; tilstand.apen = m.apen; tilstand.melding = m.melding || ""; tilstand.vapid = m.vapid;
+      tegnMeny(); nettOk(true);
+    }).catch(function () { tegnMeny(); nettOk(false); });
+
+    if (tilstand.navn) { gaTilMeny(); sjekkMeg(); }
+    else {
+      // Kanskje navnet allerede er registrert (f.eks. i Safari før appen ble lagt til)
+      visSkjerm("s-velkommen");
+      var vel = $("s-velkommen"); vel.classList.add("venter");
+      var vis = function () { vel.classList.remove("venter"); };
+      var nod = setTimeout(vis, 4000);
+      MR.api("meg", { token: token }, { forsok: 2, timeout: 6000 }).then(function (r) {
+        clearTimeout(nod);
+        if (r && r.navn) { tilstand.navn = r.navn; MR.lsSet("navn", r.navn); tilstand.harVarsel = r.harVarsel; if (r.tlf) { tilstand.tlf = r.tlf; MR.lsSet("tlf", r.tlf); } vis(); gaTilMeny(); }
+        else vis();
+      }).catch(function () { clearTimeout(nod); vis(); });
+    }
+    pollLoop();
+  }
+
+  function sjekkMeg() {
+    MR.api("meg", { token: token }, { forsok: 2 }).then(function (r) {
+      tilstand.harVarsel = !!(r && r.harVarsel);
+      if (r && !r.navn && tilstand.navn) MR.api("registrer", { token: token, navn: tilstand.navn }).catch(function () { });
+      tegnVarselkort();
+    }).catch(function () { });
+  }
+
+  function gaTilMeny() {
+    tegnMeny(); tegnVarselkort();
+    velgFane(tilstand.fane || "meny");
+    $("o-hei").textContent = "Pour " + tilstand.navn;
+  }
+
+  /* ---------- Navn ---------- */
+  $("navnskjema").onsubmit = function (e) {
+    e.preventDefault();
+    MR.lasOppLyd();
+    var navn = $("navn").value.replace(/\s+/g, " ").trim();
+    if (!navn) { $("navnfeil").textContent = "Skriv inn navnet ditt først."; $("navn").focus(); return; }
+    var k = $("navnknapp"); k.disabled = true; k.innerHTML = '<span class="spinn"></span>';
+    MR.api("registrer", { token: token, navn: navn }).then(function (r) {
+      if (!r.ok) throw r;
+      tilstand.navn = navn; MR.lsSet("navn", navn);
+      $("navn").blur();
+      if (erIOS && !frittstaende && MR.MODUS !== "gas" && !MR.lsGet("hoppetOver")) visSkjerm("s-installer");
+      else gaTilMeny();
+    }).catch(function (err) {
+      $("navnfeil").textContent = (err && err.melding) || "Noe gikk galt. Prøv igjen.";
+    }).then(function () { k.disabled = false; k.textContent = "Entrez"; });
+  };
+  $("hoppover").onclick = function () { MR.lsSet("hoppetOver", "1"); gaTilMeny(); };
+
+  /* ---------- Meny ---------- */
+  function tegnMeny() {
+    var b = "";
+    if (!tilstand.apen) b = '<div class="banner"><b>Baren tar en pause</b><br>' + esc(tilstand.melding || "Vi tar ikke imot bestillinger akkurat nå.") + "</div>";
+    else if (tilstand.melding) b = '<div class="banner">' + esc(tilstand.melding) + "</div>";
+    $("m-banner").innerHTML = b;
+    var h = "";
+    BAR.seksjoner.forEach(function (s) {
+      h += '<div class="seksjon"><h2>' + esc(s.navn) + "</h2><p>" + esc(s.undertekst) + "</p></div>";
+      BAR.drinker.filter(function (d) { return d.seksjon === s.id; }).forEach(function (d) {
+        var ut = tilstand.utsolgt.indexOf(d.id) >= 0;
+        h += '<button class="drink' + (ut ? " utsolgt" : "") + '" data-id="' + d.id + '">' +
+          '<div class="fr">' + esc(d.navn) + '</div><div class="var">Vår variant av ' + esc(d.ekte) + "</div>" +
+          '<div class="tag">' + esc(d.tagline) + '</div><div class="ing">' + esc(d.menyIng) + "</div>" +
+          (ut ? '<span class="merke">Épuisé · utsolgt</span>' : '<span class="pil">›</span>') + "</button>";
+      });
+    });
+    h += '<div class="seksjon"><h2>Votre Création</h2><p>Lag din egen – bartenderen gjør resten</p></div>' +
+      '<button class="drink egen" id="egen-kort"><div class="fr">Lag din egen</div><div class="var">Votre Création</div>' +
+      '<div class="tag">For den som ikke lar seg diktere. Velg fritt fra husets spiskammer, døp skapelsen din – og la bartenderen finne balansen.</div>' +
+      '<div class="ing">Brennevin · likører · sitrus · brus · søtt · aroma – eller helt alkoholfri</div><span class="pil">›</span></button>';
+    h += tipsHtml("m-");
+    $("m-liste").innerHTML = h;
+    Array.prototype.forEach.call(document.querySelectorAll(".drink[data-id]"), function (el) {
+      el.onclick = function () { apneDrink(el.getAttribute("data-id")); };
+    });
+    $("egen-kort").onclick = apneEgen;
+    kobleTips("m-");
+  }
+
+  /* ---------- Pourboire (tips) ---------- */
+  function tipsHtml(p) {
+    return '<div class="tips"><h3>Pourboire</h3><p>Bartenderen lever av applaus, komplimenter og Vipps.</p>' +
+      '<div class="nummer">' + esc(BAR.vipps) + '</div><p style="font-size:14.5px">Vipps et valgfritt beløp til nummeret over.</p>' +
+      '<button class="knapp sekundar" id="' + p + 'tipsknapp">Kopier nummeret</button></div>';
+  }
+  function kobleTips(p) {
+    var b = $(p + "tipsknapp"); if (!b) return;
+    b.onclick = function () {
+      var nr = BAR.vipps.replace(/\s/g, "");
+      var ok = function () { toast("Kopiert! Åpne Vipps, trykk Send og lim inn nummeret."); };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(nr).then(ok, function () { toast("Vipps-nummeret er " + BAR.vipps); });
+        else toast("Vipps-nummeret er " + BAR.vipps);
+      } catch (e) { toast("Vipps-nummeret er " + BAR.vipps); }
+    };
+  }
+
+  /* Visningsnavn for en bestilling (vanlig drink eller egen) */
+  function drinkVis(o) {
+    if (o.drink === "egen" && o.egen) {
+      var alkfri = !BAR.egenAlkohol(o.egen.ing).length;
+      return { navn: o.egen.navn ? "«" + o.egen.navn + "»" : "Votre Création", ekte: "Egen drink" + (alkfri ? " · alkoholfri" : ""), ing: BAR.egenTekst(o.egen.ing) };
+    }
+    var d = BAR.finnDrink(o.drink) || { navn: o.drink, ekte: "", menyIng: "" };
+    return { navn: d.navn, ekte: d.ekte, ing: "" };
+  }
+
+  /* ---------- «Lag din egen» ---------- */
+  var egen = null;
+  function apneEgen() {
+    MR.lasOppLyd();
+    egen = { stil: "", ing: [], navn: "", id: "" };
+    hentMine();
+    var h = '<div class="handtak"></div><button class="lukk" id="a-lukk" aria-label="Lukk">×</button>' +
+      '<div class="fr">Votre Création</div><div class="var">Lag din egen</div><svg class="orn"><use href="#orn"/></svg>' +
+      '<p class="besk" style="text-align:center;margin-top:0">Kryss av det du har lyst på. Bartenderen finner mengdene og balansen.</p>' +
+      '<label class="felt">1 · Hvordan vil du ha den?</label><div class="stiler">' +
+      BAR.egen.stiler.map(function (st) { return '<button data-stil="' + st.id + '"><b>' + esc(st.navn) + "</b><span>" + esc(st.besk) + "</span></button>"; }).join("") + "</div>" +
+      '<label class="felt">2 · Velg ingredienser</label><div class="hint" style="margin-top:0">Så mange du vil – men maks ' + BAR.egen.maksSprit + " sorter brennevin eller likør. Uten brennevin blir den alkoholfri.</div>" +
+      BAR.egen.kategorier.map(function (k) {
+        return '<div class="katt">' + esc(k.navn) + '</div><div class="chips">' + k.ing.map(function (i) {
+          var tom = (tilstand.tomt || []).indexOf(i) >= 0;
+          return '<button class="chip-ing" data-ing="' + i + '"' + (tom ? " disabled" : "") + ">" + esc(BAR.egen.navn[i]) + (tom ? " – tomt" : "") + "</button>";
+        }).join("") + "</div>";
+      }).join("") +
+      '<label class="felt" for="e-navn">3 · Døp drinken din <span style="font-family:var(--serif);font-weight:400;letter-spacing:0;color:var(--dempet);font-style:italic">(valgfritt)</span></label>' +
+      '<input class="inn" id="e-navn" maxlength="30" placeholder="F.eks. Le Chaos Doré" enterkeyhint="done">' +
+      '<label class="felt" for="a-notat">Et ønske til baren? <span style="font-family:var(--serif);font-weight:400;letter-spacing:0;color:var(--dempet);font-style:italic">(valgfritt)</span></label>' +
+      '<input class="inn" id="a-notat" maxlength="100" placeholder="F.eks. ekstra sterk, lite is" enterkeyhint="done">' +
+      '<div class="egensum"><div class="linje" id="e-sum"></div><button class="knapp" id="a-bestill" disabled>Commander ma création</button><div class="feil" id="a-feil"></div></div>';
+    $("ark").innerHTML = h;
+    $("slor").classList.add("vis"); $("ark").classList.add("vis"); $("ark").classList.add("bygger"); $("ark").scrollTop = 0;
+    document.body.classList.add("ark-apen");
+    document.body.style.overflow = "hidden";
+    $("a-lukk").onclick = lukkArk;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-stil]"), function (b) {
+      b.onclick = function () { egen.stil = b.getAttribute("data-stil"); egen.id = ""; oppdaterEgen(); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-ing]"), function (b) {
+      b.onclick = function () {
+        var id = b.getAttribute("data-ing"), pos = egen.ing.indexOf(id);
+        if (pos >= 0) egen.ing.splice(pos, 1);
+        else {
+          var kat = BAR.egenKategori(id);
+          if ((kat === "sprit" || kat === "likor") && BAR.egenAlkohol(egen.ing).length >= BAR.egen.maksSprit) { toast("Maks " + BAR.egen.maksSprit + " sorter brennevin eller likør – ta bort en først."); return; }
+          if (egen.ing.length >= BAR.egen.maksTotalt) { toast("Maks " + BAR.egen.maksTotalt + " ingredienser."); return; }
+          egen.ing.push(id);
+        }
+        egen.id = ""; oppdaterEgen();
+      };
+    });
+    $("a-bestill").onclick = bestillEgen;
+    if (!tilstand.apen) $("a-feil").textContent = tilstand.melding || "Baren tar en pause akkurat nå.";
+    oppdaterEgen();
+  }
+  function oppdaterEgen() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-stil]"), function (b) { b.classList.toggle("valgt", b.getAttribute("data-stil") === egen.stil); });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-ing]"), function (b) { b.classList.toggle("valgt", egen.ing.indexOf(b.getAttribute("data-ing")) >= 0); });
+    var alkfri = egen.ing.length && !BAR.egenAlkohol(egen.ing).length;
+    $("e-sum").innerHTML = egen.ing.length ? "<b>Din drink:</b> " + esc(BAR.egenTekst(egen.ing)) + (alkfri ? '<span class="alkfri">alkoholfri</span>' : "") : "Ingen ingredienser valgt ennå.";
+    var mangler = !egen.stil ? "Velg hvordan du vil ha den" : !egen.ing.length ? "Velg minst én ingrediens" : "";
+    var k = $("a-bestill");
+    k.disabled = !!mangler || !tilstand.apen;
+    k.textContent = mangler || "Commander ma création";
+  }
+  function bestillEgen() {
+    if (!egen) return;
+    MR.lasOppLyd();
+    egen.navn = $("e-navn").value.replace(/\s+/g, " ").trim();
+    if (!egen.id) egen.id = MR.nyId(12);
+    var k = $("a-bestill"); k.disabled = true; k.innerHTML = '<span class="spinn"></span> Sender …';
+    $("a-feil").textContent = "";
+    var data = { token: token, navn: tilstand.navn, drink: "egen", antall: 1, notat: $("a-notat").value, id: egen.id, egen: { ing: egen.ing, stil: egen.stil, navn: egen.navn } };
+    MR.api("bestill", data, { forsok: 4 }).then(function (r) {
+      if (!r.ok) throw r;
+      nettOk(true);
+      var navn = egen.navn ? "«" + egen.navn + "»" : "Din egen drink";
+      lukkArk(); egen = null;
+      tilstand.sistStatus[r.ordre.id] = r.ordre.status; lagreSist();
+      toast("Merci ! " + navn + " er bestilt.");
+      velgFane("mine");
+    }).catch(function (err) {
+      if (!$("a-bestill")) return;
+      k.disabled = false; k.textContent = "Prøv igjen";
+      $("a-feil").textContent = (err && err.melding) || "Noe gikk galt. Prøv igjen.";
+      if (err && (err.feil === "egen" || err.feil === "stengt")) hentMine();
+    });
+  }
+
+  /* ---------- Ark: velg og bestill ---------- */
+  var valgt = null;
+  function apneDrink(id) {
+    MR.lasOppLyd();
+    var d = BAR.finnDrink(id); if (!d) return;
+    hentMine();
+    var ut = tilstand.utsolgt.indexOf(id) >= 0;
+    valgt = { d: d, antall: 1, id: MR.nyId(12) };
+    $("ark").innerHTML =
+      '<div class="handtak"></div><button class="lukk" id="a-lukk" aria-label="Lukk">×</button>' +
+      '<div class="fr">' + esc(d.navn) + '</div><div class="var">Vår variant av ' + esc(d.ekte) + "</div>" +
+      '<svg class="orn"><use href="#orn"/></svg>' +
+      '<p class="besk">' + esc(d.beskrivelse) + "</p>" +
+      '<div class="fakta"><b>Ingredienser</b> · ' + esc(d.menyIng) + "<br><b>Serveres i</b> · " + esc(d.glass.toLowerCase()) + "</div>" +
+      (ut ? '<div class="banner">Denne er dessverre utsolgt for kvelden.</div>' :
+        '<div class="teller"><span class="lab">Antall</span><span class="ktr"><button id="a-minus" aria-label="Færre">−</button><span class="n" id="a-n">1</span><button id="a-pluss" aria-label="Flere">+</button></span></div>' +
+        '<label class="felt" for="a-notat">Et ønske til baren? <span style="font-family:var(--serif);font-weight:400;letter-spacing:0;color:var(--dempet);font-style:italic">(valgfritt)</span></label>' +
+        '<input class="inn" id="a-notat" maxlength="100" placeholder="F.eks. lite is eller ekstra lime" enterkeyhint="done">' +
+        '<button class="knapp" id="a-bestill">Commander</button><div class="feil" id="a-feil"></div>' +
+        '<p class="hint" style="text-align:center">' + (tilstand.harVarsel ? "Du får et varsel på telefonen når den er klar." : "Du ser det her i appen når den er klar.") + "</p>");
+    $("slor").classList.add("vis"); $("ark").classList.add("vis"); $("ark").scrollTop = 0;
+    document.body.classList.add("ark-apen");
+    document.body.style.overflow = "hidden";
+    $("a-lukk").onclick = lukkArk;
+    if (!ut) {
+      var oppd = function () {
+        $("a-n").textContent = valgt.antall;
+        $("a-minus").disabled = valgt.antall <= 1; $("a-pluss").disabled = valgt.antall >= 3;
+        $("a-bestill").textContent = valgt.antall > 1 ? "Commander · " + valgt.antall + " stk" : "Commander";
+      };
+      $("a-minus").onclick = function () { if (valgt.antall > 1) valgt.antall--; valgt.id = MR.nyId(12); oppd(); };
+      $("a-pluss").onclick = function () { if (valgt.antall < 3) valgt.antall++; valgt.id = MR.nyId(12); oppd(); };
+      $("a-bestill").onclick = bestill;
+      if (!tilstand.apen) { $("a-bestill").disabled = true; $("a-feil").textContent = tilstand.melding || "Baren tar en pause akkurat nå."; }
+      oppd();
+    }
+  }
+  function lukkArk() { $("slor").classList.remove("vis"); $("ark").classList.remove("vis"); $("ark").classList.remove("bygger"); document.body.classList.remove("ark-apen"); document.body.style.overflow = ""; valgt = null; egen = null; }
+  $("slor").onclick = lukkArk;
+
+  function bestill() {
+    if (!valgt) return;
+    MR.lasOppLyd();
+    var k = $("a-bestill"); k.disabled = true; k.innerHTML = '<span class="spinn"></span> Sender …';
+    $("a-feil").textContent = "";
+    var data = { token: token, navn: tilstand.navn, drink: valgt.d.id, antall: valgt.antall, notat: $("a-notat").value, id: valgt.id };
+    MR.api("bestill", data, { forsok: 4 }).then(function (r) {
+      if (!r.ok) throw r;
+      nettOk(true);
+      var navn = valgt.d.navn;
+      lukkArk();
+      tilstand.sistStatus[r.ordre.id] = r.ordre.status; lagreSist();
+      toast("Merci ! " + navn + " er bestilt.");
+      velgFane("mine");
+    }).catch(function (err) {
+      if (!$("a-bestill")) return;
+      k.disabled = false; k.textContent = "Prøv igjen";
+      $("a-feil").textContent = (err && err.melding) || "Noe gikk galt. Prøv igjen.";
+      if (err && (err.feil === "utsolgt" || err.feil === "stengt")) oppdaterMeny();
+    });
+  }
+
+  /* ---------- Mine bestillinger ---------- */
+  var statusTekst = {
+    ny: function (o) { return "Reçu · mottatt<small>" + (o.foran === 0 ? "Neste i køen!" : o.foran === 1 ? "1 drink foran deg i køen" : o.foran + " drinker foran deg i køen") + "</small>"; },
+    lages: function () { return "En préparation<small>Bartenderen lager den akkurat nå</small>"; },
+  };
+  function tegnMine() {
+    var aktive = tilstand.ordre.filter(function (o) { return o.status === "ny" || o.status === "lages"; });
+    var klare = tilstand.ordre.filter(function (o) { return o.status === "ferdig" && Date.now() - o.endret < 20 * 60000; });
+    var t = $("f-tall");
+    if (aktive.length) { t.style.display = ""; t.textContent = aktive.length; t.classList.remove("klar"); }
+    else if (klare.length) { t.style.display = ""; t.textContent = "✓"; t.classList.add("klar"); }
+    else t.style.display = "none";
+    if (!tilstand.ordre.length) { $("o-liste").innerHTML = '<p class="tom">Ingen bestillinger ennå.<br>Finn noe fristende i La Carte.</p>' + tipsHtml("o-"); kobleTips("o-"); return; }
+    $("o-liste").innerHTML = tilstand.ordre.map(function (o) {
+      var d = drinkVis(o);
+      var steg = o.status === "ny" ? 1 : o.status === "lages" ? 2 : 3;
+      var st = o.status === "ferdig" ? "Prêt ! Hent den i baren<small>Klar kl. " + MR.klokkeslett(o.endret) + "</small>" : statusTekst[o.status](o);
+      return '<div class="ordre ' + (o.status === "ferdig" ? "ferdig" : "") + '">' +
+        '<div class="hode"><div class="fr">' + (o.antall > 1 ? o.antall + " × " : "") + esc(d.navn) + '</div><div class="nr">Nº ' + o.nr + "</div></div>" +
+        '<div class="var">' + esc(d.ekte) + " · bestilt kl. " + MR.klokkeslett(o.tid) + "</div>" +
+        (d.ing ? '<div class="var" style="font-style:italic">' + esc(d.ing) + "</div>" : "") +
+        (o.notat ? '<div class="notat">«' + esc(o.notat) + "»</div>" : "") +
+        '<div class="prog"><span class="på"></span><span class="' + (steg >= 2 ? "på" : "") + '"></span><span class="' + (steg >= 3 ? "på" : "") + '"></span></div>' +
+        '<div class="status">' + st + "</div>" +
+        (o.status === "ny" ? '<button class="avb" data-avb="' + o.id + '">Avbestill</button>' : "") + "</div>";
+    }).join("") + tipsHtml("o-");
+    kobleTips("o-");
+    Array.prototype.forEach.call(document.querySelectorAll("[data-avb]"), function (b) {
+      b.onclick = function () {
+        if (!confirmAvbestill(b)) return;
+        b.disabled = true; b.textContent = "Avbestiller …";
+        MR.api("avbestill", { token: token, id: b.getAttribute("data-avb") }).then(function (r) {
+          toast(r.ok ? "Bestillingen er avbestilt." : (r.melding || "Kunne ikke avbestille.")); hentMine();
+        }).catch(function (e) { toast(e.melding || "Kunne ikke avbestille."); b.disabled = false; b.textContent = "Avbestill"; });
+      };
+    });
+  }
+  function confirmAvbestill(b) {
+    if (b.getAttribute("data-bekreft")) return true;
+    b.setAttribute("data-bekreft", "1"); b.textContent = "Trykk igjen for å avbestille";
+    setTimeout(function () { if (b.isConnected) { b.removeAttribute("data-bekreft"); b.textContent = "Avbestill"; } }, 4000);
+    return false;
+  }
+
+  function lagreSist() { MR.lsSet("sist", JSON.stringify(tilstand.sistStatus)); }
+
+  var henter = false;
+  function hentMine() {
+    if (henter || !tilstand.navn || !MR.konfigurert()) return Promise.resolve();
+    henter = true; sistHentet = Date.now();
+    return MR.api("mine", { token: token }, { forsok: 2, timeout: 12000 }).then(function (r) {
+      nettOk(true);
+      if (!r.ok) return;
+      var nyeKlare = [];
+      r.ordre.forEach(function (o) {
+        var før = tilstand.sistStatus[o.id];
+        if (o.status === "ferdig" && før && før !== "ferdig" && Date.now() - o.endret < 15 * 60000) nyeKlare.push(o);
+        tilstand.sistStatus[o.id] = o.status;
+      });
+      lagreSist();
+      tilstand.ordre = r.ordre;
+      var endretMeny = JSON.stringify(r.utsolgt) !== JSON.stringify(tilstand.utsolgt) || r.apen !== tilstand.apen || (r.melding || "") !== tilstand.melding;
+      tilstand.utsolgt = r.utsolgt || []; tilstand.tomt = r.tomt || []; tilstand.apen = r.apen; tilstand.melding = r.melding || "";
+      if (endretMeny) {
+        tegnMeny();
+        // Oppdater et åpent ark hvis baren har åpnet/stengt i mellomtiden
+        if (valgt && $("a-bestill") && !$("a-bestill").querySelector(".spinn")) { $("a-bestill").disabled = !tilstand.apen; $("a-feil").textContent = tilstand.apen ? "" : (tilstand.melding || "Baren tar en pause akkurat nå."); }
+        if (egen && $("e-sum")) { $("a-feil").textContent = tilstand.apen ? "" : (tilstand.melding || "Baren tar en pause akkurat nå."); oppdaterEgen(); }
+      }
+      tegnMine();
+      if (nyeKlare.length) visKlar(nyeKlare);
+    }).catch(function () { nettOk(false); }).then(function () { henter = false; });
+  }
+  function oppdaterMeny() { return hentMine(); }
+
+  var sistHentet = 0;
+  function pollLoop() {
+    setInterval(function () {
+      var harApne = tilstand.ordre.some(function (o) { return o.status === "ny" || o.status === "lages"; });
+      var synlig = document.visibilityState !== "hidden";
+      var intervall = !synlig ? 30000 : harApne ? 4000 : 20000;
+      if (Date.now() - sistHentet >= intervall) hentMine();
+    }, 1000);
+  }
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") hentMine(); });
+  window.addEventListener("focus", function () { hentMine(); });
+
+  /* ---------- «Klar»-melding ---------- */
+  function visKlar(liste) {
+    var o = liste[0], d = drinkVis(o);
+    $("klar-tekst").textContent = (o.antall > 1 ? o.antall + " × " : "") + d.navn + " (" + (o.drink === "egen" ? "Votre Création" : d.ekte) + ") venter på deg, " + tilstand.navn + ".";
+    $("klar-tips").textContent = "Fornøyd? Pourboire via Vipps: " + BAR.vipps;
+    $("klar").classList.add("vis");
+    MR.klokke("klar");
+    try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) { }
+  }
+  $("klar-ok").onclick = function () { $("klar").classList.remove("vis"); velgFane("mine"); };
+
+  /* ---------- Push-varsler ---------- */
+  var swReg = null;
+  function registrerSW() {
+    if (!stottePush) return;
+    navigator.serviceWorker.register("sw.js?g=" + encodeURIComponent(token)).then(function (reg) {
+      swReg = reg;
+      if (Notification.permission === "granted") sikreAbonnement(false);
+    }).catch(function (e) { console.warn("SW", e); });
+    navigator.serviceWorker.addEventListener("message", function (e) { if (e.data && e.data.type === "push") hentMine(); });
+  }
+  function hentReg() { return swReg ? Promise.resolve(swReg) : navigator.serviceWorker.ready; }
+  function sikreAbonnement(nytt) {
+    return hentReg().then(function (reg) {
+      return reg.pushManager.getSubscription().then(function (sub) {
+        if (sub && !nytt) return sub;
+        var key = tilstand.vapid;
+        var hentKey = key ? Promise.resolve(key) : MR.api("meny", {}).then(function (m) { tilstand.vapid = m.vapid; return m.vapid; });
+        return hentKey.then(function (k) { return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: MR.urlB64(k) }); });
+      });
+    }).then(function (sub) {
+      return MR.api("abonner", { token: token, sub: sub.toJSON() }).then(function (r) {
+        if (!r.ok) throw r;
+        tilstand.harVarsel = true; tegnVarselkort(); return true;
+      });
+    });
+  }
+  function slaPaVarsler(knapp) {
+    MR.lasOppLyd();
+    knapp.disabled = true; knapp.innerHTML = '<span class="spinn"></span>';
+    Promise.resolve(Notification.requestPermission()).then(function (p) {
+      if (p !== "granted") { tegnVarselkort(); toast("Varsler ble ikke slått på. Du ser status her i appen."); return; }
+      return sikreAbonnement(false).then(function () { toast("Varsler er på. Vi sier fra når glasset er klart!"); });
+    }).catch(function (e) {
+      console.warn(e); toast("Fikk ikke slått på varsler. Prøv igjen om litt.");
+      knapp.disabled = false; knapp.textContent = "Slå på varsler";
+    });
+  }
+  function testVarsel(el) {
+    el.disabled = true; el.textContent = "Sender testvarsel …";
+    MR.api("testmeg", { token: token }).then(function (r) {
+      toast(r.ok ? "Testvarsel sendt – sjekk telefonen." : (r.melding || "Kunne ikke sende testvarsel."));
+    }).catch(function (e) { toast(e.melding || "Kunne ikke sende."); }).then(function () { el.disabled = false; el.textContent = "Send meg et testvarsel"; });
+  }
+
+  /* Reserve: telefonnummer, så kjøkkenet kan sende en iMessage/SMS med ett klikk */
+  function tlfSkjema(p) {
+    if (tilstand.tlf) return '<p class="ok-linje">✓ Baren kan sende deg en melding på ' + esc(tilstand.tlf) + '.</p>';
+    return '<p style="margin:10px 0 0">Eller legg igjen mobilnummeret ditt, så sender baren deg en melding:</p>' +
+      '<form class="tlfrad" id="' + p + 'tlfskjema"><input class="inn" id="' + p + 'tlf" type="tel" inputmode="tel" placeholder="Mobilnummer" autocomplete="tel"><button class="knapp sekundar" type="submit">Lagre</button></form>';
+  }
+  function kobleTlf(p) {
+    var f = $(p + "tlfskjema"); if (!f) return;
+    f.onsubmit = function (e) {
+      e.preventDefault();
+      var v = $(p + "tlf").value.replace(/[^0-9+]/g, "");
+      if (v.length < 8) { toast("Skriv inn et gyldig mobilnummer."); return; }
+      MR.api("registrer", { token: token, navn: tilstand.navn, tlf: v }).then(function (r) {
+        if (!r.ok) throw r;
+        tilstand.tlf = v; MR.lsSet("tlf", v); toast("Takk! Baren sender deg en melding når drinken er klar.");
+        tegnVarselkort(); tegnInstallerTlf();
+      }).catch(function (e2) { toast((e2 && e2.melding) || "Kunne ikke lagre nummeret."); });
+    };
+  }
+  function tegnInstallerTlf() { $("i-tlf").innerHTML = '<div class="boks" style="margin-top:14px">' + tlfSkjema("i-") + "</div>"; kobleTlf("i-"); }
+  tegnInstallerTlf();
+
+  function tegnVarselkort() {
+    var html = "";
+    var klokke = '<div class="kl"><svg width="24" height="24"><use href="#bjelle"/></svg></div>';
+    if (MR.MODUS === "gas") html = "";
+    else if (stottePush && Notification.permission === "granted" && tilstand.harVarsel) {
+      html = '<div class="varselkort">' + klokke + '<div><h3>Varsler er på</h3><p>Du får beskjed på telefonen når drinken er klar.</p><button class="lenke" id="vk-test">Send meg et testvarsel</button></div></div>';
+    } else if (stottePush && Notification.permission === "denied") {
+      html = '<div class="varselkort">' + klokke + '<div><h3>Varsler er blokkert</h3><p>Helt i orden – du ser status her i appen. Vil du ha varsler, kan du slå dem på under Innstillinger → Varslinger → Retrouvailles.</p>' + tlfSkjema("@@") + '</div></div>';
+    } else if (stottePush) {
+      html = '<div class="varselkort">' + klokke + '<div><h3>Få varsel når drinken er klar</h3><p>Slå på varsler, så gir baren beskjed i det øyeblikket glasset ditt står klart.</p><button class="knapp" id="vk-pa">Slå på varsler</button></div></div>';
+    } else if (erIOS && !frittstaende) {
+      html = '<div class="varselkort">' + klokke + '<div><h3>Vil du ha varsel på mobilen?</h3><p>Legg baren på Hjem-skjermen, så får du beskjed når drinken er klar.</p><button class="lenke" id="vk-guide">Vis meg hvordan</button>' + tlfSkjema("@@") + '</div></div>';
+    }
+    $("m-varsel").innerHTML = html.replace(/@@/g, "vk-"); $("o-varsel").innerHTML = html.replace(/id="vk-/g, 'id="vk2-').replace(/@@/g, "vk2-");
+    ["vk-", "vk2-"].forEach(function (p) {
+      kobleTlf(p);
+      var pa = $(p + "pa"), test = $(p + "test"), guide = $(p + "guide");
+      if (pa) pa.onclick = function () { slaPaVarsler(pa); };
+      if (test) test.onclick = function () { testVarsel(test); };
+      if (guide) guide.onclick = function () { visSkjerm("s-installer"); $("faner").classList.remove("vis"); };
+    });
+  }
+
+  start();
+})();
+</script>
+</body>
+</html>
